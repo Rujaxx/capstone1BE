@@ -1,6 +1,6 @@
 const express = require("express");
-const app = express();
 const http = require("http");
+const app = express();
 const server = http.createServer(app);
 const socketIO = require("socket.io");
 const io = socketIO(server, {
@@ -9,63 +9,17 @@ const io = socketIO(server, {
     methods: ["GET", "POST"],
   },
 });
+
 const path = require("path");
 app.get("/", function (req, res, next) {
   res.send("respond with a Home resource");
 });
+
 //Load env vars
 const dotenv = require("dotenv");
 dotenv.config({ path: "./config/config.env" });
 
 app.use(express.static("public"));
-
-//Game State
-let gameState = ["", "", "", "", "", "", "", "", ""];
-
-//chat state
-let chat = [];
-
-//socket.io emit connections
-io.on("connection", (socket) => {
-  console.log("A user just connected.");
-  socket.on("disconnect", () => {
-    console.log("A user has disconnected.");
-  });
-  //start button
-  socket.on("startGame", () => {
-    io.emit("startGame");
-  });
-  //crazy button takes in data from crazy button and emits it back to the app js
-  socket.on("crazyIsClicked", (data) => {
-    if (gameState[data?.id] !== "") {
-      return io.emit("crazyIsClicked", {
-        message: `${data.name} the field is already field up`,
-        user: data?.name,
-      });
-    } else {
-      gameState[data?.id] = data?.name?.substring(0, 2);
-      return io.emit("crazyIsClicked", {
-        data: gameState,
-        lastPlayed: data?.name,
-      });
-    }
-  });
-
-  socket.on("newMessage", (data) => {
-    console.log("chat", data);
-    chat.push(data);
-    return io.emit("broadcastMessage", chat.reverse());
-  });
-});
-
-server.on("error", (err) => {
-  console.error(err);
-});
-
-//DEV logging Middleware
-// if (process.env.NODE_ENV === 'development') {
-//     app.use(morgan('dev'));
-// };
 
 const PORT = process.env.PORT || 8000;
 

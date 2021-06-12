@@ -10,7 +10,7 @@ function Home() {
         onChange={(e) => setname(e.target.value)}
         style={{ margin: "2rem", width: "10%" }}
       />
-      <a href={`/game?name=${name}`} style={{ margin: "2rem", width: "10%" }}>
+      <a href={`/room?name=${name}`} style={{ margin: "2rem", width: "10%" }}>
         Join{" "}
       </a>
     </div>

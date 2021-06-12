@@ -67,12 +67,14 @@ function Game({ location }) {
       alert("Wait for partner to play");
       return;
     }
+    console.log("hehe", socket?.id);
     socket.emit("crazyIsClicked", {
       name: user,
       id: id,
     });
   };
   const handleMessage = () => {
+    console.log("mess", socket?.id);
     socket.emit("newMessage", {
       name: name,
       message: message,
